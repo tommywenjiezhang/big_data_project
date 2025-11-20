@@ -12,6 +12,7 @@ set -euo pipefail
 
 HADOOP_HOME=${HADOOP_HOME:-/home/ubuntu/hadoop-2.6.5}
 SLAVES_FILE="$HADOOP_HOME/etc/hadoop/slaves"
+YARN_SITE="$HADOOP_HOME/etc/hadoop/yarn-site.xml"
 
 JAR="$HOME/citibike-mr/target/citibike-mr-1.0-SNAPSHOT.jar"
 CLASS="com.wenjie.citibike.AvgTripKm"
@@ -19,6 +20,28 @@ INPUT="/input/citibike-may2025"
 OUT_PATH="/tmp/output/top10-$(date +%Y%m%d-%H%M)-may2025"
 
 echo "==================== Cleaning up existing YARN applications ===================="
+
+if [[ ! -f "$YARN_SITE" ]]; then
+  echo "FATAL: Missing $YARN_SITE; cannot validate YARN shuffle configuration."
+  exit 1
+fi
+
+echo "Validating NodeManager shuffle configuration..."
+aux_services=$(awk -F'[<>]' '/yarn.nodemanager.aux-services/{getline; print $3}' "$YARN_SITE" | tr -d '[:space:]')
+shuffle_class=$(awk -F'[<>]' '/yarn.nodemanager.aux-services.mapreduce.shuffle.class/{getline; print $3}' "$YARN_SITE" | tr -d '[:space:]')
+
+if [[ "$aux_services" != "mapreduce_shuffle" ]]; then
+  echo "FATAL: yarn.nodemanager.aux-services should be set to mapreduce_shuffle (found: '${aux_services:-<empty>}')."
+  exit 1
+fi
+
+if [[ "$shuffle_class" != "org.apache.hadoop.mapred.ShuffleHandler" ]]; then
+  echo "FATAL: yarn.nodemanager.aux-services.mapreduce.shuffle.class should be org.apache.hadoop.mapred.ShuffleHandler (found: '${shuffle_class:-<empty>}')."
+  echo "Reducers will hang during shuffle if this is misconfigured."
+  exit 1
+fi
+
+echo "Shuffle config looks correct."
 
 # Kill any RUNNING YARN apps from previous runs
 # (ignore errors if YARN is not up yet)
