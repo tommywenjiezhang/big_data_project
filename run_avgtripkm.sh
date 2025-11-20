@@ -28,7 +28,7 @@ fi
 
 echo "Validating NodeManager shuffle configuration..."
 aux_services=$(awk -F'[<>]' '/yarn.nodemanager.aux-services/{getline; print $3}' "$YARN_SITE" | tr -d '[:space:]')
-shuffle_class=$(awk -F'[<>]' '/yarn.nodemanager.aux-services.mapreduce.shuffle.class/{getline; print $3}' "$YARN_SITE" | tr -d '[:space:]')
+shuffle_class=$(awk -F'[<>]' '/yarn.nodemanager.aux-services.mapreduce_shuffle.class/{getline; print $3}' "$YARN_SITE" | tr -d '[:space:]')
 
 if [[ "$aux_services" != "mapreduce_shuffle" ]]; then
   echo "FATAL: yarn.nodemanager.aux-services should be set to mapreduce_shuffle (found: '${aux_services:-<empty>}')."
@@ -36,7 +36,7 @@ if [[ "$aux_services" != "mapreduce_shuffle" ]]; then
 fi
 
 if [[ "$shuffle_class" != "org.apache.hadoop.mapred.ShuffleHandler" ]]; then
-  echo "FATAL: yarn.nodemanager.aux-services.mapreduce.shuffle.class should be org.apache.hadoop.mapred.ShuffleHandler (found: '${shuffle_class:-<empty>}')."
+  echo "FATAL: yarn.nodemanager.aux-services.mapreduce_shuffle.class should be org.apache.hadoop.mapred.ShuffleHandler (found: '${shuffle_class:-<empty>}')."
   echo "Reducers will hang during shuffle if this is misconfigured."
   exit 1
 fi
