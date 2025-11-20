@@ -7,6 +7,17 @@
     <value>yarn</value>
   </property>
 
+  <!-- Resource Manager application master sizing -->
+  <property>
+    <name>yarn.app.mapreduce.am.resource.mb</name>
+    <value>1024</value>
+  </property>
+
+  <property>
+    <name>yarn.app.mapreduce.am.command-opts</name>
+    <value>-Xmx768m</value>
+  </property>
+
   <!-- Default number of reducers (override per-job if needed) -->
   <property>
     <name>mapreduce.job.reduces</name>
@@ -16,7 +27,7 @@
   <!-- ========================= -->
   <!--   MAP TASK CONTAINERS     -->
   <!-- ========================= -->
-  <!-- Map container memory: 1.5 GB -->
+  <!-- Map container memory: 2 GB -->
   <property>
     <name>mapreduce.map.memory.mb</name>
     <value>2048</value>
@@ -26,6 +37,11 @@
   <property>
     <name>mapreduce.map.java.opts</name>
     <value>-Xmx1638m</value>
+  </property>
+
+  <property>
+    <name>mapreduce.map.cpu.vcores</name>
+    <value>1</value>
   </property>
 
   <!-- ========================= -->
@@ -41,6 +57,11 @@
   <property>
     <name>mapreduce.reduce.java.opts</name>
     <value>-Xmx3278m</value>
+  </property>
+
+  <property>
+    <name>mapreduce.reduce.cpu.vcores</name>
+    <value>1</value>
   </property>
 
   
