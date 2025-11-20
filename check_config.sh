@@ -12,13 +12,15 @@ EXP_MIN_ALLOC="256"
 EXP_MAX_ALLOC="6144"
 EXP_AUX="mapreduce_shuffle"
 EXP_SHUFFLE_CLS="org.apache.hadoop.mapred.ShuffleHandler"
+EXP_LOCAL_DIRS="/mnt/nm1,/mnt/nm2"
+EXP_LOG_DIRS="/home/ubuntu/hadoop-2.6.5/logs"
 
 EXP_AM_MB="1024"
 EXP_AM_OPTS="-Xmx768m"
-EXP_MAP_MB="1024"
-EXP_MAP_OPTS="-Xmx768m"
-EXP_RED_MB="1536"
-EXP_RED_OPTS="-Xmx1152m"
+EXP_MAP_MB="2048"
+EXP_MAP_OPTS="-Xmx1638m"
+EXP_RED_MB="4096"
+EXP_RED_OPTS="-Xmx3278m"
 EXP_MAP_VC="1"
 EXP_RED_VC="1"
 
@@ -54,7 +56,7 @@ REMOTE
   # yarn-site.xml checks
   rmhost=$(xml_get_val "$Y" "yarn.resourcemanager.hostname")
   aux=$(xml_get_val "$Y" "yarn.nodemanager.aux-services")
-  shcls=$(xml_get_val "$Y" "yarn.nodemanager.aux-services.mapreduce.shuffle.class")
+  shcls=$(xml_get_val "$Y" "yarn.nodemanager.aux-services.mapreduce_shuffle.class")
   nmmem=$(xml_get_val "$Y" "yarn.nodemanager.resource.memory-mb")
   nmvc=$(xml_get_val "$Y" "yarn.nodemanager.resource.cpu-vcores")
   minalloc=$(xml_get_val "$Y" "yarn.scheduler.minimum-allocation-mb")
@@ -73,18 +75,27 @@ REMOTE
   redvc=$(xml_get_val "$M" "mapreduce.reduce.cpu.vcores")
 
   # Compare helper
-  cmp() { local key="$1" got="$2" exp="$3"; if [ -z "$got" ]; then printf "  !! %-45s %-15s (expected: %s)\n" "$key" "<EMPTY>" "$exp"; elif [ "$got" != "$exp" ]; then printf "  !! %-45s %-15s (expected: %s)\n" "$key" "$got" "$exp"; else printf "  OK %-45s %s\n" "$key" "$got"; fi; }
+  cmp() {
+    local key="$1" got="$2" exp="$3"
+    if [ -z "$got" ]; then
+      printf "  !! %-45s %-15s (expected: %s)\n" "$key" "<EMPTY>" "$exp"
+    elif [ "$got" != "$exp" ]; then
+      printf "  !! %-45s %-15s (expected: %s)\n" "$key" "$got" "$exp"
+    else
+      printf "  OK %-45s %s\n" "$key" "$got"
+    fi
+  }
 
   echo "  [yarn-site.xml]"
   cmp "yarn.resourcemanager.hostname" "$rmhost" "$EXP_RM_HOST"
   cmp "yarn.nodemanager.aux-services" "$aux" "$EXP_AUX"
-  cmp "yarn.nodemanager.aux-services.mapreduce.shuffle.class" "$shcls" "$EXP_SHUFFLE_CLS"
+  cmp "yarn.nodemanager.aux-services.mapreduce_shuffle.class" "$shcls" "$EXP_SHUFFLE_CLS"
   cmp "yarn.nodemanager.resource.memory-mb" "$nmmem" "$EXP_NM_MEM"
   cmp "yarn.nodemanager.resource.cpu-vcores" "$nmvc" "$EXP_NM_VCORES"
   cmp "yarn.scheduler.minimum-allocation-mb" "$minalloc" "$EXP_MIN_ALLOC"
   cmp "yarn.scheduler.maximum-allocation-mb" "$maxalloc" "$EXP_MAX_ALLOC"
-  if [ -z "$ldirs" ]; then echo "  !! yarn.nodemanager.local-dirs is EMPTY"; else echo "  OK yarn.nodemanager.local-dirs               $ldirs"; fi
-  if [ -z "$llogs" ]; then echo "  !! yarn.nodemanager.log-dirs is EMPTY"; else echo "  OK yarn.nodemanager.log-dirs                $llogs"; fi
+  cmp "yarn.nodemanager.local-dirs" "$ldirs" "$EXP_LOCAL_DIRS"
+  cmp "yarn.nodemanager.log-dirs" "$llogs" "$EXP_LOG_DIRS"
 
   echo "  [mapred-site.xml]"
   cmp "yarn.app.mapreduce.am.resource.mb" "$ammb" "$EXP_AM_MB"
