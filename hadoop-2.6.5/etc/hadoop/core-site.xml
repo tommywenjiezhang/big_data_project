@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<configuration>
+
+  <!-- Default Hadoop filesystem -->
+  <property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://master:9000</value>
+  </property>
+
+  <!-- Local Hadoop temp directory -->
+  <property>
+    <name>hadoop.tmp.dir</name>
+    <value>file:///home/ubuntu/hadoop-2.6.5/tmp</value>
+  </property>
+
+  <!-- Enable S3A connector -->
+  <property>
+    <name>fs.s3a.impl</name>
+    <value>org.apache.hadoop.fs.s3a.S3AFileSystem</value>
+  </property>
+
+  <!-- AWS region (adjust if needed) -->
+  <property>
+    <name>fs.s3a.endpoint</name>
+    <value>s3.amazonaws.com</value>
+  </property>
+
+  <!-- Use the EC2 instance role (LabInstanceProfile / LabRole) for credentials -->
+  <property>
+    <name>fs.s3a.aws.credentials.provider</name>
+    <value>org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider,com.amazonaws.auth.InstanceProfileCredentialsProvider</value>
+  </property>
+
+  <!-- Optional: connection/retry tuning for Hadoop 2.6.5 -->
+  <property>
+    <name>fs.s3a.connection.maximum</name>
+    <value>100</value>
+  </property>
+
+  <property>
+    <name>fs.s3a.attempts.maximum</name>
+    <value>20</value>
+  </property>
+
+  <property>
+    <name>fs.s3a.connection.timeout</name>
+    <value>30000</value>
+  </property>
+
+</configuration>

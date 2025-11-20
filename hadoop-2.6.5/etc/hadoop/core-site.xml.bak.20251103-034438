@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<configuration>
+  <!-- your existing defaults -->
+  <property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://master:9000</value>
+  </property>
+  <property>
+    <name>hadoop.tmp.dir</name>
+    <value>file:///home/ubuntu/hadoop-2.6.5/tmp</value>
+  </property>
+
+  <!-- S3A config for Hadoop 2.6.5 -->
+  <property>
+    <name>fs.s3a.impl</name>
+    <value>org.apache.hadoop.fs.s3a.S3AFileSystem</value>
+  </property>
+  <property>
+    <name>fs.s3a.endpoint</name>
+    <value>s3.amazonaws.com</value>
+  </property>
+
+cat $HADOOP_CONF_DIR/core-site.xml

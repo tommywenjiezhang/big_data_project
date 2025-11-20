@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<configuration>
+  <property>
+    <name>dfs.replication</name>
+    <value>3</value>
+  </property>
+
+  <!-- NameNode RPC/HTTP (on master) -->
+  <property>
+    <name>dfs.namenode.rpc-address</name>
+    <value>master:9000</value>
+  </property>
+  <property>
+    <name>dfs.namenode.http-address</name>
+    <value>master:50070</value>
+  </property>
+
+  <!-- Storage dirs (exist and owned by 'ubuntu') -->
+  <property>
+    <name>dfs.namenode.name.dir</name>
+    <value>file:///home/ubuntu/hadoop-2.6.5/dfs/name</value>
+  </property>
+  <property>
+    <name>dfs.datanode.data.dir</name>
+    <value>file:///home/ubuntu/hadoop-2.6.5/dfs/data</value>
+  </property>
+
+  <!-- EC2 friendliness -->
+  <property>
+    <name>dfs.datanode.address</name>
+    <value>0.0.0.0:50010</value>
+  </property>
+  <property>
+    <name>dfs.datanode.http.address</name>
+    <value>0.0.0.0:50075</value>
+  </property>
+
+  <!-- If you want hostname-based comms (usually not needed intra-VPC) -->
+  <property>
+    <name>dfs.datanode.use.datanode.hostname</name>
+    <value>false</value>
+  </property>
+</configuration>

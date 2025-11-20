@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<configuration>
+  <!-- Your existing HDFS default -->
+  <property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://master:9000</value>
+  </property>
+
+  <property>
+    <name>hadoop.tmp.dir</name>
+    <value>file:///home/ubuntu/hadoop-2.6.5/tmp</value>
+  </property>
+
+  <!-- S3A wiring for Hadoop 2.6.5 -->
+  <property>
+    <name>fs.s3a.impl</name>
+    <value>org.apache.hadoop.fs.s3a.S3AFileSystem</value>
+  </property>
+
+  <!-- Learner Lab regions are us-east-1 / us-west-2; default endpoint works for us-east-1 -->
+  <property>
+    <name>fs.s3a.endpoint</name>
+    <value>s3.amazonaws.com</value>
+  </property>
+
+  <!-- Use the EC2 instance profile (LabInstanceProfile/LabRole) for creds -->
+  <property>
+    <name>fs.s3a.aws.credentials.provider</name>
+    <value>com.amazonaws.auth.InstanceProfileCredentialsProvider</value>
+  </property>
+
+  <!-- Optional: speed/retry hygiene on old stacks -->
+  <property>
+    <name>fs.s3a.connection.maximum</name>
+    <value>100</value>
+  </property>
+  <property>
+    <name>fs.s3a.attempts.maximum</name>
+    <value>20</value>
+  </property>
+  <property>
+    <name>fs.s3a.connection.timeout</name>
+    <value>30000</value>
+  </property>
+</configuration>
